@@ -1,0 +1,20 @@
+@keyframes waveGlow {
+  0% {
+    box-shadow: 0 0 5px 0px rgba(7, 202, 7, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 5px 5px rgba(0, 255, 0, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 10px 15px rgba(0, 255, 0, 0);
+  }
+}
+
+.blinking-light {
+  width: 10px;
+  height: 10px;
+  background-color: rgb(29, 211, 29);
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: waveGlow 1s infinite;
+}
