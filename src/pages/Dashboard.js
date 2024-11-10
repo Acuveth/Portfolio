@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
 import "../Dashboard.css";
-//import backgroundVideo from "../Assets/video2.mp4";
 import Clock from "./Clock";
 import { Link } from "react-router-dom";
 import {
@@ -8,32 +7,58 @@ import {
   AiFillLinkedin,
   AiOutlineCalendar,
 } from "react-icons/ai";
-import Button from "./Button";
 import InlineWidget from "@calcom/embed-react";
 import image from "../assets/image.jpg";
+import cv from "../assets/cv.png";
+import emailjs from "@emailjs/browser"; // Import EmailJS
 
-//Mogoče nucam tuki en form
 const Dashboard = () => {
-  const videoRef = useRef(null);
-  const [selectedColor, setSelectedColor] = useState("blue"); // Default color
+  const formRef = useRef(); // Ref for the form
+  const [selectedColor, setSelectedColor] = useState("#6e66cb"); // Default color
   const [isHovered, setIsHovered] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
   const handleButtonClick = () => setShowEmbed(true);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.5;
-    }
-  }, []);
+  const sendEmail = (e) => {
+    e.preventDefault();
+    emailjs
+      .sendForm(
+        "service_pkl3sal",
+        "template_710qcfo",
+        formRef.current,
+        "czEJnd0GyLqybqwWS"
+      )
+      .then(
+        (result) => {
+          alert("Message sent successfully!");
+          formRef.current.reset(); // Reset form fields
+        },
+        (error) => {
+          alert("Failed to send message, please try again.");
+        }
+      );
+  };
 
+  // Function to darken a color by a specific amount (0 to 1)
   const darkenColor = (color, amount) => {
-    const colors = {
-      blue: "#1E3A8A",
-      green: "#065F46",
-      red: "#991B1B",
-      purple: "#6B21A8",
-    };
-    return colors[color] || color;
+    let colorValue = color.startsWith("#") ? color.slice(1) : color;
+
+    // Convert hex to RGB
+    let r = parseInt(colorValue.substring(0, 2), 16);
+    let g = parseInt(colorValue.substring(2, 4), 16);
+    let b = parseInt(colorValue.substring(4, 6), 16);
+
+    // Darken each channel by the specified amount
+    r = Math.max(0, Math.min(255, Math.floor(r * (1 - amount))));
+    g = Math.max(0, Math.min(255, Math.floor(g * (1 - amount))));
+    b = Math.max(0, Math.min(255, Math.floor(b * (1 - amount))));
+
+    // Convert RGB back to hex
+    const darkenedColor = `#${((1 << 24) + (r << 16) + (g << 8) + b)
+      .toString(16)
+      .slice(1)}`;
+
+    return darkenedColor;
   };
 
   // Function to handle color selection
@@ -41,23 +66,11 @@ const Dashboard = () => {
     setSelectedColor(color);
   };
 
+  const buttonTextColor =
+    selectedColor === "#d9eaf2" ? "text-gray-900" : "text-white";
+
   return (
     <div className="flex items-center justify-center h-screen relative font-firacode">
-      {/* 
-      <div className="video-wrapper absolute top-0 left-0 w-full h-full z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          className="w-full h-full object-cover"
-        >
-          <source src={backgroundVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-      </div>
-      */}
-
       {/* Color Overlay */}
       <div className="overlay absolute top-0 left-0 w-full h-full bg-gray-900 z-10"></div>
 
@@ -93,7 +106,12 @@ const Dashboard = () => {
               <div className="text-sm text-gray-600 ">welcome</div>
 
               <div className="mt-2 font-firacode">
-                Additional information or description goes here
+                Hi, I'm Luka Gaberšček, a full stack software developer with a
+                strong passion for technology and math. My goal in life is to
+                build and create new and exciting ideas.
+                <div className="mt-16">
+                  Feel free to reach out to me if you have any projects in mind.
+                </div>
               </div>
             </div>
             {/* Photo Holder */}
@@ -111,12 +129,12 @@ const Dashboard = () => {
               href="https://github.com/Acuveth"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white px-4 py-2 flex items-center justify-center hover:bg-blue-600"
+              className={`px-4 py-2 flex items-center justify-center hover:bg-blue-600 ${buttonTextColor}`}
               style={{ backgroundColor: selectedColor }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = darkenColor(
                   selectedColor,
-                  0.1
+                  0.2
                 ))
               }
               onMouseLeave={(e) =>
@@ -130,12 +148,12 @@ const Dashboard = () => {
               href="https://www.linkedin.com/in/luka-gaber%C5%A1%C4%8Dek-608285163/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-white px-4 flex items-center justify-center hover:bg-blue-600"
+              className={`px-4 py-2 flex items-center justify-center hover:bg-blue-600 ${buttonTextColor}`}
               style={{ backgroundColor: selectedColor }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = darkenColor(
                   selectedColor,
-                  0.1
+                  0.2
                 ))
               }
               onMouseLeave={(e) =>
@@ -152,12 +170,12 @@ const Dashboard = () => {
                   e.preventDefault();
                   handleButtonClick();
                 }}
-                className="text-white px-4 py-2 flex items-center justify-center hover:bg-blue-600"
+                className={`px-4 py-2 flex items-center justify-center hover:bg-blue-600 ${buttonTextColor}`}
                 style={{ backgroundColor: selectedColor }}
                 onMouseEnter={(e) =>
                   (e.currentTarget.style.backgroundColor = darkenColor(
                     selectedColor,
-                    0.1
+                    0.2
                   ))
                 }
                 onMouseLeave={(e) =>
@@ -187,7 +205,7 @@ const Dashboard = () => {
 
         {/* Other Divs */}
         <div
-          className="row-span-5 col-start-5 bg-gray-900 flex items-center justify-center border-2 border-white text-white"
+          className="row-span-5 col-start-5 bg-gray-900 flex border-2 border-white text-white"
           style={{
             borderColor: "white",
             transition: "border-color 0.1s ease",
@@ -197,7 +215,28 @@ const Dashboard = () => {
           }
           onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
         >
-          Full stack developer
+          <div className="flex flex-col">
+            <div className="text-xl font-semibold px-6 py-4">About me</div>
+            <div className="px-6 text-sm">
+              I'm a full stack developer from Slovenia.
+            </div>
+            <div className="px-6 text-sm my-4">
+              <div className="mb-1">My primary focus lies with:</div>
+              <li>JavaScript, React, CSS, HTML and Flutter </li>
+              <li>Java, PHP, Node js and C#</li>
+              <li>SQL, MongoDB, Firebase</li>
+            </div>
+
+            <div className="px-6 text-sm my-4">
+              Beyond coding I'm also passionate about philosophy, history,
+              science and business.
+            </div>
+            <div className="px-6 text-sm">
+              My main moto in life is "Do not use an aircraft carrier to kill a
+              fly". Focusing on elegance, wholeness and understanding in order
+              to solve problems.
+            </div>
+          </div>
         </div>
 
         {/* Available Now Status */}
@@ -212,7 +251,20 @@ const Dashboard = () => {
           }
           onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
         >
-          <span className="blinking-light"></span> Available Now
+          <div
+            className="blinking-light"
+            style={{
+              width: "10px",
+              height: "10px",
+              backgroundColor: selectedColor,
+              borderRadius: "50%",
+              marginRight: "8px",
+              animation: "blinkPulse 1s infinite ease-in-out", // Pulsing effect
+              transition: "background-color 0.3s ease", // Smooth color transition
+            }}
+          ></div>
+
+          <div className="font-semibold text-xl">Available Now</div>
         </div>
 
         {/* Link to My Work */}
@@ -285,9 +337,8 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Credits */}
         <div
-          className="col-span-2 col-start-3 row-start-6 bg-gray-900 flex items-center justify-center border-2 text-white text-sm"
+          className="col-span-1 col-start-2 px-4 row-start-6 bg-gray-900 flex items-center text-center justify-center border-2 text-white text-sm"
           style={{
             borderColor: "white",
             transition: "border-color 0.1s ease",
@@ -297,59 +348,84 @@ const Dashboard = () => {
           }
           onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
         >
-          © 2024 · Source code for the portfolio
+          © 2024 · Made using React, tailwindcss, cal.com & EmailJS
         </div>
 
-        {/* Circular Color Selection Buttons */}
         <div
-          className="col-start-2 row-start-6 bg-gray-900 flex flex-col items-center justify-center border-2 p-4 space-y-4"
+          className="col-span-2 col-start-3 row-start-6 bg-gray-900 flex flex-col items-center justify-center border-2 p-4 space-y-4"
           style={{
-            borderColor: isHovered ? selectedColor : "white", // Border color depends on hover state and selectedColor
+            borderColor: isHovered ? selectedColor : "white",
           }}
           onMouseEnter={() => setIsHovered(true)} // Set hover state to true
           onMouseLeave={() => setIsHovered(false)} // Set hover state to false
         >
           <div className="flex flex-row space-x-4">
             <button
-              onClick={() => handleColorChange("blue")}
-              className="+ bg-blue-500 w-12 h-12 hover:bg-blue-600"
+              onClick={() => handleColorChange("#6e66cb")}
+              className="bg-[#6e66cb] w-12 h-12 hover:bg-[#5851a2]"
             ></button>
             <button
-              onClick={() => handleColorChange("green")}
-              className="+ bg-green-500 w-12 h-12 hover:bg-green-600"
+              onClick={() => handleColorChange("#13cc80")}
+              className="bg-[#13cc80] w-12 h-12 hover:bg-[#0fa366]"
             ></button>
             <button
-              onClick={() => handleColorChange("red")}
-              className=" bg-red-500 w-12 h-12 hover:bg-red-600"
+              onClick={() => handleColorChange("#ff5883")}
+              className="bg-[#ff5883] w-12 h-12 hover:bg-[#cc4668]"
             ></button>
             <button
-              onClick={() => handleColorChange("purple")}
-              className=" bg-purple-500 w-12 h-12 hover:bg-purple-600"
+              onClick={() => handleColorChange("#4d1f4d")}
+              className="bg-[#4d1f4d] w-12 h-12 hover:bg-[#3d183d]"
+            ></button>
+            <button
+              onClick={() => handleColorChange("#ffc24d")}
+              className="bg-[#ffc24d] w-12 h-12 hover:bg-[#cc9b3d]" // Yellow button
+            ></button>
+            <button
+              onClick={() => handleColorChange("#f37c54")}
+              className="bg-[#f37c54] w-12 h-12 hover:bg-[#c26343]" // Orange button
+            ></button>
+            <button
+              onClick={() => handleColorChange("#d9eaf2")}
+              className="bg-[#d9eaf2] w-12 h-12 hover:bg-[#b0c5cf]"
             ></button>
           </div>
         </div>
 
         {/* CV Link */}
         <div
-          className="col-start-5 row-start-6 bg-gray-900 flex items-center justify-center border-2 text-white"
+          className="col-start-5 row-start-6 bg-gray-900 flex items-center justify-center border-2 text-white relative overflow-hidden"
           style={{
             borderColor: "white",
             transition: "border-color 0.1s ease",
           }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.borderColor = selectedColor)
-          }
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = selectedColor;
+            e.currentTarget.querySelector(".hover-bg").style.opacity = 1;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "white";
+            e.currentTarget.querySelector(".hover-bg").style.opacity = 0;
+          }}
         >
+          {/* Pseudo-element for background image */}
+          <div
+            className="hover-bg absolute inset-0 bg-cover bg-center transition-opacity duration-300"
+            style={{
+              backgroundImage: `url(${cv})`, // Replace `image` with the imported image path
+              opacity: 0,
+            }}
+          ></div>
+
           <a
             href="/cv.pdf"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full h-full flex px-6 py-4 text-xl font-firacode font-semibold"
+            className="w-full h-full flex px-4 py-2 text-xl font-firacode font-semibold relative z-10"
           >
-            CV
+            My CV
           </a>
         </div>
+        {/* Contact Form Section */}
         <div
           className="row-span-6 col-start-6 row-start-1 bg-gray-900 flex flex-col p-4 border-2 border-white text-white"
           style={{
@@ -362,33 +438,40 @@ const Dashboard = () => {
           onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
         >
           <h2 className="text-xl font-semibold mb-4">Contact Me</h2>
-          <form className="flex flex-col space-y-4">
+          <form
+            ref={formRef}
+            onSubmit={sendEmail}
+            className="flex flex-col space-y-4"
+          >
             <input
               type="text"
+              name="user_name"
               placeholder="Your Name"
-              className="bg-gray-800  border-2 border-gray-600 p-2  text-white"
+              className="bg-gray-800 border-2 border-gray-600 p-2 text-white"
               required
             />
             <input
               type="email"
+              name="user_email"
               placeholder="Your Email"
-              className="bg-gray-800 border-2 border-gray-600 p-2  text-white "
+              className="bg-gray-800 border-2 border-gray-600 p-2 text-white"
               required
             />
             <textarea
+              name="message"
               placeholder="Your Message"
               rows="16"
-              className="bg-gray-800 border-2 border-gray-600 p-2 text-white resize-none "
+              className="bg-gray-800 border-2 border-gray-600 p-2 text-white resize-none"
               required
             ></textarea>
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white py-2 mt-2"
+              className={`px-4 py-2 flex items-center justify-center hover:bg-blue-600 ${buttonTextColor}`}
               style={{ backgroundColor: selectedColor }}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = darkenColor(
                   selectedColor,
-                  0.1
+                  0.2
                 ))
               }
               onMouseLeave={(e) =>
