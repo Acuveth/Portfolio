@@ -10,6 +10,7 @@ import {
 } from "react-icons/ai";
 import Button from "./Button";
 import InlineWidget from "@calcom/embed-react";
+import image from "../assets/image.jpg";
 
 //Mogoče nucam tuki en form
 const Dashboard = () => {
@@ -107,7 +108,7 @@ const Dashboard = () => {
           {/* Buttons Row at the Bottom */}
           <div className="flex space-x-4 mt-4">
             <a
-              href="https://github.com/yourusername"
+              href="https://github.com/Acuveth"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white px-4 py-2 flex items-center justify-center hover:bg-blue-600"
@@ -126,7 +127,7 @@ const Dashboard = () => {
               <div className="ml-2">Github</div>
             </a>
             <a
-              href="https://linkedin.com/in/yourusername"
+              href="https://www.linkedin.com/in/luka-gaber%C5%A1%C4%8Dek-608285163/"
               target="_blank"
               rel="noopener noreferrer"
               className="text-white px-4 flex items-center justify-center hover:bg-blue-600"
@@ -217,17 +218,30 @@ const Dashboard = () => {
         {/* Link to My Work */}
         <Link
           to="/my-work"
-          className="col-span-2 row-span-2 col-start-2 row-start-4 bg-gray-900 border-2  flex text-white text-xl font-semibold px-6 py-4"
+          className="col-span-2 row-span-2 col-start-2 row-start-4 bg-gray-900 border-2 flex text-white text-xl font-semibold px-6 py-4 relative overflow-hidden"
           style={{
             borderColor: "white",
             transition: "border-color 0.1s ease",
           }}
-          onMouseEnter={(e) =>
-            (e.currentTarget.style.borderColor = selectedColor)
-          }
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "white")}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.borderColor = selectedColor;
+            e.currentTarget.querySelector(".hover-bg").style.opacity = 1;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.borderColor = "white";
+            e.currentTarget.querySelector(".hover-bg").style.opacity = 0;
+          }}
         >
-          Work Showoff
+          {/* Pseudo-element for background image */}
+          <div
+            className="hover-bg absolute inset-0 bg-cover bg-center transition-opacity duration-300"
+            style={{
+              backgroundImage: `url(${image})`,
+              opacity: 0,
+            }}
+          ></div>
+
+          <span className="relative z-10">Work Showoff</span>
         </Link>
 
         {/* Contact Info */}
