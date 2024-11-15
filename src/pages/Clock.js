@@ -22,7 +22,11 @@ const Clock = () => {
     return () => clearInterval(intervalId); // Cleanup interval on component unmount
   }, []);
 
-  return <div className="text-3xl font-semibold font-firacode">{time}</div>;
+  return (
+    <div className="text-base lg:text-xl xl:text-2xl 2xl:text-3xl  font-semibold font-firacode">
+      {time}
+    </div>
+  );
 };
 
 export default Clock;
